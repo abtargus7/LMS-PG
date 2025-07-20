@@ -16,6 +16,18 @@ if(process.env.NODE_ENV === "development") {
 app.use(express.json({limit: "10kb"}))
 app.use(express.urlencoded({extended: true, limit: true}))
 
+// global error handler
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({
+        status: 'error',
+        message: err.message || "Internal Server error",
+        ...(process.env.NODE_ENV === "development" && {stack: err.stack })
+    })
+})
+
+
+//api routes
 
 app.use((req, res) => {
     res.status(404).json({
